@@ -1,142 +1,77 @@
-## Kurakkum Patti Kadikkilla — MVP
+<img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
-Tagline: “കുരയ്ക്കും പട്ടി കടിക്കില്ല” — The threat assessment bot that barks more than it bites.
 
-A playful overlay chatbot that scans visible page text, assigns a tongue‑in‑cheek threat/noise score, replies with a funny Malayalam dialogue, and plays Malayalam TTS audio.
+# [Project Name] 🎯
+Kurakkum Patti Kadikkilla 
 
-### Quickstart (Local)
+## Basic Details
+### Team Name: TEAM CUSAT  
 
-- Backend: FastAPI + gTTS (Malayalam)
-- Frontend: Minimal overlay injected on any page (or test via `frontend/index.html`)
 
-#### 1) Backend
+### Team Members
+- Team Lead: Ruvais P - SOE,CUSAT
+- Member 2: Sajad Hussain - SOE,CUSAT
 
-```powershell
+### Project Description
+A security-obsessed Malayalam chatbot that blocks users from accessing HTTP (non-HTTPS) websites and scolds them with hilarious Malayalam dialogues. "കുരയ്ക്കും പട്ടി കടിക്കില്ല" — The overprotective digital dog that barks at insecure connections.
+
+### The Problem (that doesn't exist)
+People are carelessly browsing HTTP websites in 2025 without realizing the "danger" of unencrypted connections! Someone needs to be the internet police and lecture them about it.
+
+### The Solution (that nobody asked for)
+We created a Malayalam-speaking security guard that detects HTTP pages, blocks access with dramatic flair, and delivers entertaining security lectures in Malayalam with TTS audio because HTTPS enforcement should be fun!
+
+## Technical Details
+### Technologies/Components Used
+For Software:
+Languages: Python, JavaScript, HTML, CSS
+Frameworks: FastAPI (Backend), Vanilla JS (Frontend)
+Libraries: gTTS (Malayalam Text-to-Speech), uvicorn
+Tools: Browser Extension/Userscript, URL Detection, Tampermonkey support
+
+### Implementation
+
+For Software:
+# Installation
+# Backend Setup
 cd kurakkum-patti-kadikkilla/backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app:app --reload --host 0.0.0.0 --port 8000
-```
 
-- Health check: `http://localhost:8000/health`
-- Audio served from: `http://localhost:8000/audio/...`
-
-#### 2) Frontend (Local demo)
-
-Open `frontend/index.html` in your browser, or serve the folder:
-
-```powershell
+# Frontend Setup  
 cd ..\frontend
 python -m http.server 5173
-```
 
-Visit `http://localhost:5173` and you should see the overlay in the bottom‑right.
+# Run
+# Start Backend
+cd backend
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
 
-### Allowlist Settings (Only run on selected sites)
+# Access Frontend
+# Open http://localhost:5173 in browser
+# Health check: http://localhost:8000/health
 
-- Click the ⚙️ button on the bubble to open settings.
-- Add domains like `twitter.com`, `*.news.example` or paste any substring (e.g., `https://example.com/community`).
-- Click "Enable on this site" for a quick add.
-- The overlay will only scan when the current page matches your list.
+### Project Documentation
+For Software:
 
-### Run on every site without an extension (Userscript)
+![Screenshot 2025-08-09 164736](https://github.com/user-attachments/assets/72c3ab07-2fb7-4e2c-bf4a-a2b9a7477627)
+![Screenshot 2025-08-09 165103](https://github.com/user-attachments/assets/9aba4daa-958d-4c38-b6ff-756f49aa78de)
+![Screenshot 2025-08-09 164938](https://github.com/user-attachments/assets/4af79d4e-d6f1-47bb-8dd3-2ac1d1059137)
 
-Use Tampermonkey/Violentmonkey to inject the overlay on every page at browser startup, while the allowlist limits scanning:
 
-```javascript
-// ==UserScript==
-// @name         Kurakkum Patti Kadikkilla Overlay
-// @namespace    kpk
-// @version      0.1.0
-// @description  Inject overlay on all pages; scan only allowed sites
-// @match        *://*/*
-// @run-at       document-end
-// @grant        GM_getValue
-// @grant        GM_setValue
-// @grant        GM_addStyle
-// ==/UserScript==
-(function() {
-  'use strict';
-  // Configure your backend
-  window.KPK_BACKEND_URL = 'https://YOUR_BACKEND';
 
-  // Provide a global storage bridge so the allowlist persists across origins
-  window.KPK_STORAGE = {
-    getAllowedSites: function() {
-      try { return JSON.parse(GM_getValue('KPK_ALLOWED_SITES', '[]')); } catch(e) { return []; }
-    },
-    setAllowedSites: function(list) {
-      GM_setValue('KPK_ALLOWED_SITES', JSON.stringify(list || []));
-    }
-  };
+# Diagrams
+![Workflow]
+<img width="2594" height="3848" alt="Untitled diagram _ Mermaid Chart-2025-08-09-113303" src="https://github.com/user-attachments/assets/ac0518b8-8091-414b-8cd3-602a7e8ec389" />
 
-  // Inject styles and script
-  GM_addStyle('@import url("https://YOUR_HOST/styles.css");');
-  var s = document.createElement('script');
-  s.src = 'https://YOUR_HOST/overlay.js';
-  document.documentElement.appendChild(s);
-})();
-```
+### Project Demo
+# Video
+https://youtu.be/Hky8yf065D4
+---
+Made with ❤️ at TinkerHub Useless Projects 
 
-Replace `YOUR_BACKEND` with your API URL and `YOUR_HOST` with where you host `overlay.js` and `styles.css`.
-
-#### 3) Use as a Bookmarklet (optional)
-
-Host `overlay.js` and `styles.css` somewhere, then create a bookmarklet that injects it:
-
-```text
-javascript:(function(){var s=document.createElement('link');s.rel='stylesheet';s.href='https://YOUR_HOST/styles.css';document.documentElement.appendChild(s);var j=document.createElement('script');j.src='https://YOUR_HOST/overlay.js';j.onload=function(){window.KPK_BACKEND_URL='https://YOUR_BACKEND';};document.documentElement.appendChild(j);})();
-```
-
-### API
-
-- POST `/analyze` → `{ dialogue, audio_url, score, category, matched_keywords }`
-- GET `/health` → `{ status: 'ok' }`
-
-### Scoring Logic
-
-- Start 30
-- +15 per danger keyword occurrence (e.g., "ബോംബ്", "വെടിവെപ്പ്")
-- -10 per noise keyword occurrence (e.g., "പൊളിച്ചു", "ബ്രേക്കിങ് ന്യൂസ്")
-- -5 per drama unit (exclamation groups, elongated vowels, hype words)
-- Clamp 0..100, categorize: low < 35, medium < 70, else high
-
-### Notes
-
-- Malayalam TTS uses `gTTS` (`lang=ml`). Files are written to `backend/audio/` and served at `/audio/...`.
-- CORS is open so the overlay can call the backend from any site. Lock this down if deploying publicly.
-- This is an entertainment project; do not rely on the score for real threat assessment.
-
-### Deploy
-
-- Backend: Render / Railway / Fly.io / Heroku
-- Frontend: Any static host or embed via bookmarklet/Tampermonkey
-
-## Push to GitHub
-
-```powershell
-cd C:\Users\alisa\OneDrive\Desktop\bot\kurakkum-patti-kadikkilla
-git init
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/kurakkum-patti-kadikkilla.git
-git add .
-git commit -m "feat: initial MVP (FastAPI, overlay, userscript, metrics)"
-git push -u origin main
-```
-
-Recommended `.gitignore` (create at repo root):
-
-```
-.venv/
-backend/.venv/
-**/__pycache__/
-*.pyc
-backend/audio/
-.DS_Store
-Thumbs.db
-.env
-*.log
-```
+![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
+![Static Badge](https://img.shields.io/badge/UselessProjects--25-25?link=https%3A%2F%2Fwww.tinkerhub.org%2Fevents%2FQ2Q1TQKX6Q%2FUseless%2520Projects)
 
 
