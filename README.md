@@ -67,7 +67,7 @@ For Software:
 
 ### Project Demo
 # Video
-https://youtu.be/Hky8yf065D4
+https://youtu.be/P128ckYr84E
 ---
 Made with ❤️ at TinkerHub Useless Projects 
 
