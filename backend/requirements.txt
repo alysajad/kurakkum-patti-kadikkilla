@@ -3,4 +3,4 @@ uvicorn[standard]>=0.30.0
 gTTS>=2.5.1
 pydantic>=2.7.1
 requests>=2.32.0
-
+gunicorn==21.2.0
